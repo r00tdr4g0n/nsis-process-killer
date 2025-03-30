@@ -31,6 +31,7 @@ void CTargetDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CTargetDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -45,7 +46,7 @@ BOOL CTargetDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-	// TODO: Add extra initialization here
+	m_hDll = LoadLibrary(L"TargetDll.dll");
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -86,3 +87,12 @@ HCURSOR CTargetDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+void CTargetDlg::OnDestroy()
+{
+	CDialogEx::OnDestroy();
+
+	if (m_hDll) {
+		FreeLibrary(m_hDll);
+	}
+}

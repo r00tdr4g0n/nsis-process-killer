@@ -10,6 +10,12 @@
   nsProcessKiller::_FindProcess /NOUNLOAD `${_PROCESS}`
 !macroend
 
+!define nsProcessKiller::FindProcessUsingDll `!insertmacro nsProcessKiller::FindProcessUsingDll`
+
+!macro nsProcessKiller::FindProcessUsingDll _PROCESS
+  nsProcessKiller::_FindProcessUsingDll /NOUNLOAD `${_PROCESS}`
+!macroend
+
 !define nsProcessKiller::KillProcess `!insertmacro nsProcessKiller::KillProcess`
 
 !macro nsProcessKiller::KillProcess _PID

@@ -33,5 +33,5 @@ void NSISCALL PushString(LPCTSTR a_str);
 
 extern "C" NSPROCESSKILLER_API void _Test(HWND a_parentHwnd, int a_stringSize, TCHAR* a_variables, stack_t** a_stackTop);
 extern "C" NSPROCESSKILLER_API void _FindProcess(HWND a_parentHwnd, int a_stringSize, TCHAR* a_variables, stack_t** a_stackTop);
-//extern "C" NSPROCESSKILLER_API void _FindProcessUsingDll(HWND a_parentHwnd, int a_stringSize, TCHAR* a_variables, stack_t** a_stackTop);
+extern "C" NSPROCESSKILLER_API void _FindProcessUsingDll(HWND a_parentHwnd, int a_stringSize, TCHAR* a_variables, stack_t** a_stackTop);
 extern "C" NSPROCESSKILLER_API void _KillProcess(HWND a_parentHwnd, int a_stringSize, TCHAR* a_variables, stack_t** a_stackTop);

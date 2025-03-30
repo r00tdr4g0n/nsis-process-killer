@@ -52,8 +52,8 @@ Var target
 Var pid
 
 Function .onInit
-  StrCpy $target "target.exe"
-  ${nsProcessKiller::FindProcess} $target
+  StrCpy $target "TargetDll.dll"
+  ${nsProcessKiller::FindProcessUsingDll} $target
   Pop $pid
   MessageBox MB_OKCANCEL "Are you sure you want to quit $target(pid:$pid)?" IDCANCEL end
   ${nsProcessKiller::KillProcess} $pid

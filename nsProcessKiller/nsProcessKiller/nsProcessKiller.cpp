@@ -60,9 +60,9 @@ void _Test(HWND a_parentHwnd, int a_stringSize, TCHAR* a_variables, stack_t** a_
 	PushString(_T("string from nsProcessKiller.dll"));
 }
 
-bool GetProcessName(DWORD a_processId, LPTSTR a_buf, DWORD a_bufSize)
+bool GetProcessName(DWORD a_pid, LPTSTR a_buf, DWORD a_bufSize)
 {
-	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, a_processId);
+	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, a_pid);
 	bool bResult = false;
 
 	if (hProcess) {
@@ -102,17 +102,17 @@ void _FindProcess(HWND a_parentHwnd, int a_stringSize, TCHAR* a_variables, stack
 					DebugString(_T("PID is %d"), procList[i]);
 					break;
 				}
-				else {
-					continue;
-				}
 			}
 			else {
 				continue;
 			}
 		}
+
+		PushString(_T("false"));
 	}
 	else {
 		DebugString(_T("Failed to EnumProcesses"));
+		PushString(_T("false"));
 	}
 }
 
@@ -180,5 +180,75 @@ void _KillProcess(HWND a_parentHwnd, int a_stringSize, TCHAR* a_variables, stack
 			}
 		}
 		hWnd = ::GetNextWindow(hWnd, GW_HWNDNEXT);
+	}
+}
+
+bool IsUsingModule(DWORD a_pid)
+{
+	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, a_pid);
+	HMODULE moduleList[1024] = { 0, };
+	DWORD moduleListSize = 0;
+	DWORD moduleCount = 0;
+	TCHAR name[MAX_PATH] = { 0, };
+
+	bool bResult = false;
+
+	if (!hProcess) {
+		DebugString(_T("Failed to open process(pid : %d)"), a_pid);
+		return false;
+	}
+
+	if (::EnumProcessModules(hProcess, moduleList, sizeof(moduleList), &moduleListSize)) {
+		moduleCount = moduleListSize / sizeof(HMODULE);
+		for (DWORD i = 0; i < moduleCount; i++) {
+			ZeroMemory(name, sizeof(name));
+			if (::GetModuleBaseName(hProcess, moduleList[i], name, MAX_PATH)) {
+				if (!_tcsicmp(name, g_buf)) {
+					bResult = true;
+					break;
+				}
+			}
+		}
+	}
+	else {
+		DebugString(_T("Failed to EnumProcessModules(pid : %d)"), a_pid);
+		bResult = false;
+	}
+
+	CloseHandle(hProcess);
+
+	return bResult;
+}
+
+void _FindProcessUsingDll(HWND a_parentHwnd, int a_stringSize, TCHAR* a_variables, stack_t** a_stackTop)
+{
+	DLL_INIT();
+	PopString(g_buf, NSIS_MAX_LEN);
+
+	DebugString(_T("Target module is %s"), g_buf);
+
+	DWORD procList[1024] = { 0, };
+	DWORD procListSize = 0;
+	DWORD procCount = 0;
+
+	if (::EnumProcesses(procList, sizeof(procList), &procListSize)) {
+		procCount = procListSize / sizeof(DWORD);
+
+		DWORD i = 0;
+		for (i = 0; i < procCount; i++) {
+			if (IsUsingModule(procList[i])) {
+				TCHAR processId[16] = { 0, };
+				_itot_s(procList[i], processId, 10);
+				PushString(processId);
+				DebugString(_T("PID is %d"), procList[i]);
+				break;
+			}
+		}
+
+		if (i >= procCount) PushString(_T("false"));
+	}
+	else {
+		DebugString(_T("Failed to EnumProcesses"));
+		PushString(_T("false"));
 	}
 }
