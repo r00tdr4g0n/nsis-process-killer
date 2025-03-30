@@ -10,7 +10,7 @@
 |파일명|위치|비고|
 |---|---|---|
 |nsProcessKiller.nsh|C:\Program Files (x86)\NSIS\Include||
-|nsProcessKiller.nsh|C:\Program Files (x86)\NSIS\Plugins\x86-unicode||
+|nsProcessKiller.dll|C:\Program Files (x86)\NSIS\Plugins\x86-unicode||
 
 #### 프로세스 찾기
 - `Target.exe` 프로세스를 찾고, 찾은 경우 `PID`를 반환
