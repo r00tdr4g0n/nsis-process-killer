@@ -19,6 +19,13 @@
 ${nsProcessKiller::FindProcess} "Target.exe"
 Pop $0 
 ```
+#### ✅ 특정 dll을 사용 중인 프로세스 찾기
+- `TargetDll.dll`을 사용 중인 프로세스를 찾고, 찾은 경우 `PID`를 반환
+- `PID`는 두 번째 명령으로 얻으며, `$0` 레지스터에 저장
+```
+${nsProcessKiller::FindProcessUsingDll} "TargetDll.dll"
+Pop $0 
+```
 #### ✅ 프로세스 종료
 - 프로세스 찾기에서 얻은 `PID($0에 저장)`를 사용하여 호출
 ```
